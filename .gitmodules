@@ -1,0 +1,6 @@
+[submodule "1_3d_pose_estimation"]
+	path = 1_3d_pose_estimation
+	url = https://gitlab.ethz.ch/narrat3d/3d-pose-estimation.git
+[submodule "4_texture_inpainting"]
+	path = 4_texture_inpainting
+	url = https://gitlab.ethz.ch/narrat3d/texture-inpainting.git

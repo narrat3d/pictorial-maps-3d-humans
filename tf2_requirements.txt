@@ -1,0 +1,13 @@
+tensorflow==2.6.0
+keras==2.6.0 
+tensorflow-addons 
+matplotlib 
+Pillow 
+numba 
+mayavi 
+PyQt5
+joblib
+sklearn
+open3d
+pymeshlab
+mathutils
