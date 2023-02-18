@@ -6,8 +6,6 @@ import os
 from numba import cuda
 import matplotlib.pyplot as plt
 import math
-from keras.losses import mean_squared_error
-import tensorflow as tf
 
 
 # make figure larger
@@ -21,9 +19,9 @@ def occupancy_field(distance_field, file_path=None):
     indices = np.moveaxis(grid, 0, -1)
     
     coords = -1 + indices / (grid_size/2)
-    xs = coords[:, :, :, 0]
-    ys = coords[:, :, :, 1]
-    zs = coords[:, :, :, 2]
+    xs = coords[:, :, :, 0].flatten()
+    ys = coords[:, :, :, 1].flatten()
+    zs = coords[:, :, :, 2].flatten()
     
     distances = distance_field.flatten()
     condition = distances < 0
@@ -34,8 +32,14 @@ def occupancy_field(distance_field, file_path=None):
     from mayavi import mlab
     
     fig = mlab.figure(size=(256,256), bgcolor=(0., 0., 0.))    
-    mlab.points3d(xs.flatten()[condition], ys.flatten()[condition], zs.flatten()[condition], distances[condition], color=(1., 1., 1.), scale_mode="none", figure=fig,
+    mlab.points3d(xs[condition], ys[condition], zs[condition], distances[condition], color=(1, 1, 1), scale_mode="none", figure=fig, scale_factor=0.05,
                   reset_zoom=False)
+    
+    
+    # https://scipy-cookbook.readthedocs.io/items/Matplotlib_Show_colormaps.html
+    # l = 64 * 64 * 0
+    # mlab.points3d(xs[l:], ys[l:], zs[l:], distances[l:], colormap='spectral', scale_mode="none", scale_factor=0.05, vmin=0, opacity=0.9)
+    
     # source: https://stackoverflow.com/questions/32514744/setting-parallel-prospective-in-mlab-mayavi-python
     fig.scene.parallel_projection = True
     fig.scene.camera.parallel_scale = 1
@@ -96,9 +100,6 @@ def show_results(input_folder, test_subfolder_names, output_folder, file_checker
                 binary_image.save(os.path.join(input_folder, subfolder_name, "%s_%s_pred.png" % (body_part_name, view)))
             
             else :
-                loss = tf.reduce_mean(mean_squared_error(distance_field, points_3d_ground_truth[0]))
-                print(loss.numpy().item())
-                
                 _, axs = plt.subplots(3, 2)
                 axs[0][1].imshow(pil_image(mask_points_2d[0, :, :, 0] + 0.5), cmap='gray', vmin=0, vmax=255)
                 axs[0][1].set_title("Test image")
@@ -137,9 +138,9 @@ def show_results(input_folder, test_subfolder_names, output_folder, file_checker
                     continue
                 else:
                     plt.show()
-
+                
                     
-                occupancy_field(distance_field)
+                occupancy_field(distance_field) # occupancy_field(points_3d_ground_truth[0])
         
         if (runs_from_generator and subfolder_nr > 9):
             break
@@ -201,19 +202,21 @@ def raymarch_distance_field_front(result, distance_field):
             
 if __name__ == '__main__':
     from config import VIEWS
-    from train_and_eval import input_folder, root_output_folder, get_best_weights_file_path,\
-        create_model, test_subfolder_names, file_checker
+    from train_and_eval import get_best_weights_file_path, initialise_folders, create_model
     
+    input_folder = os.path.join(os.path.expanduser("~"), "Downloads", "tmp2")
+    root_output_folder = os.path.join(os.path.dirname(__file__), "output")
     body_part_name = "left_hand"
     model_name = "disn_one_stream_pose"
     run_nr = 1
     
     output_folder = os.path.join(root_output_folder, body_part_name + "_" + model_name + "_run%s" % run_nr)
+    _, test_subfolder_names, _, file_checker = initialise_folders(input_folder, body_part_name)
     
     model = create_model(model_name, body_part_name)
     weights_file_path = get_best_weights_file_path(output_folder)
     model.load_weights(weights_file_path)
-    show_results(input_folder, test_subfolder_names, output_folder, # ["rp_steve_posed_001_0_0_male_small"]
+    show_results(input_folder, test_subfolder_names, output_folder,
                  file_checker, model, body_part_name, VIEWS)
     """
     
