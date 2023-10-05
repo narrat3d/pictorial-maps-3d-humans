@@ -18,13 +18,13 @@ This is the official code repository for the article "Inferring Implicit 3D Repr
 
 ## Inference with pre-trained models
 
-* Download our test data and the pre-trained models from the [project website](http://narrat3d.ethz.ch/inferring-3d-humans-from-pictorial-maps/).
+* Download our test data and the pre-trained models from the [project website](http://narrat3d.ethz.ch/3d-humans-from-pictorial-maps/).
 * Run 3d_reconstruction.bat after editing the REPOSITORY_FOLDER, MODEL_FOLDER, FIGURE_TARFILE variables. 
-* Compare your results with ours from the [project website](http://narrat3d.ethz.ch/inferring-3d-humans-from-pictorial-maps/).
+* Compare your results with ours from the [project website](http://narrat3d.ethz.ch/3d-humans-from-pictorial-maps/).
 
 ## Training the networks
 
-* Download our training and validation data from the [project website](http://narrat3d.ethz.ch/inferring-3d-humans-from-pictorial-maps/).
+* Download our training and validation data from the [project website](http://narrat3d.ethz.ch/3d-humans-from-pictorial-maps/).
 * See README.md in each sub-network folder for more information
 
 ## Creation of training and validation data
@@ -35,7 +35,7 @@ This is the official code repository for the article "Inferring Implicit 3D Repr
 
 ## Creation of test data
 
-* Import our extracted test data from the [project website](http://narrat3d.ethz.ch/inferring-3d-humans-from-pictorial-maps/) to supervise.ly with the Supervisely plugin.
+* Import our extracted test data from the [project website](http://narrat3d.ethz.ch/3d-humans-from-pictorial-maps/) to supervise.ly with the Supervisely plugin.
 * Upload your own images to the imported project and annotate your own pictorial figures with supervise.ly.
 * Export the annotations as .json + images and download the .tar file.
 
@@ -43,4 +43,4 @@ This is the official code repository for the article "Inferring Implicit 3D Repr
 
 * Optionally enable [long folder paths](https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry#enable-long-paths-in-windows-10-version-1607-and-later) (> 256 characters) if you get problems with the 3D pose estimation models
 
-© 2022 ETH Zurich, Raimund Schnürer
+© 2022-2023 ETH Zurich, Raimund Schnürer
