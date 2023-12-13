@@ -1,16 +1,12 @@
 import os
 import numpy as np
-from tensorflow.keras.losses import mean_squared_error
 from tensorflow.keras.optimizers import Adam
 import tensorflow as tf
 import time
 from visualize import calculate_uv_map
-from data_loader import load_body_parts_mask, load_uv_map, load_depth_map,\
-    load_input_data, load_output_data
-from config import IMAGE_SIZE, NUM_FILTERS, BATCH_SIZE, NUM_BODY_PARTS, TRAINING_DATA_FOLDER, INCLUDE_BODY_PARTS,\
-    DEBUG
+from data_loader import load_input_data, load_output_data
+from config import IMAGE_SIZE, NUM_FILTERS, BATCH_SIZE, NUM_BODY_PARTS, TRAINING_DATA_FOLDER, DEBUG
 from model import create_model
-
 
 current_folder = os.path.dirname(__file__)
 output_folder = os.path.join(current_folder, "output")
@@ -45,18 +41,39 @@ if DEBUG:
     train_subfolders = train_subfolders[:1]
     test_subfolders = train_subfolders
 
+@tf.function
+def calc_mean_error(masked_error, masked_uv):
+    squared_error_sum = tf.reduce_sum(masked_error, axis=[1, 2])
+    covered_pixels = tf.reduce_sum(masked_uv, axis=[1, 2])
+    mean_error = tf.reduce_mean(squared_error_sum / covered_pixels)
+    
+    return mean_error
 
 @tf.function
-def custom_metric(ytrue, ypred): 
-    masked_mse = ytrue[..., 0] * mean_squared_error(ytrue[..., 1:], ypred[..., 1:])
-       
-    return masked_mse
+def mae_loss(ytrue, ypred): 
+    # only consider available uv coordinates
+    masked_uv = tf.stack([ytrue[..., 0], ytrue[..., 0]], axis=-1)
+    masked_error = masked_uv * tf.abs(ytrue[..., 1:] - ypred[..., 1:])
+
+    mean_uv_error = calc_mean_error(masked_error, masked_uv)
+    return mean_uv_error
+
+@tf.function
+def rmse_loss(ytrue, ypred): 
+    # only consider available uv coordinates
+    masked_uv = tf.stack([ytrue[..., 0], ytrue[..., 0]], axis=-1)
+    masked_squared_error = masked_uv * tf.square(ytrue[..., 1:] - ypred[..., 1:])
+
+    mean_uv_error = calc_mean_error(masked_squared_error, masked_uv)
+    root_mean_uv_error = tf.sqrt(mean_uv_error)
+    
+    return root_mean_uv_error
 
 # @tf.function
 def train_step(model, x, y_true):
     with tf.GradientTape() as tape:
         y_pred = model(x)
-        loss = custom_metric(y_true, y_pred)
+        loss = rmse_loss(y_true, y_pred)
     gradients = tape.gradient(loss, model.trainable_variables)
     optimizer.apply_gradients(zip(gradients, model.trainable_variables))
     
@@ -66,8 +83,9 @@ def train_step(model, x, y_true):
 def eval_step(model, depth_maps, uv_maps):
     predicted_uv_maps = model(depth_maps)
             
-    loss = custom_metric(uv_maps, predicted_uv_maps)
-    return tf.reduce_mean(loss)
+    loss = mae_loss(uv_maps, predicted_uv_maps)
+    
+    return loss
 
 
 def log(*args, end="\n"):
@@ -120,23 +138,23 @@ def train_and_eval():
 
     model = create_model(IMAGE_SIZE, NUM_BODY_PARTS, NUM_FILTERS)
     
-    if (os.path.exists(weights_file_path)):
-        model.load_weights(weights_file_path)
+    if (os.path.exists(best_weights_file_path)):
+        model.load_weights(best_weights_file_path)
     
-    loss = loop(train_subfolders, model, train_step)
-    log("train loss", loss)
+    # loss = loop(train_subfolders, model, train_step)
+    # log("train loss", loss)
     
     loss = loop(test_subfolders, model, eval_step)
     log("eval loss", loss)
     
-    model.save_weights(weights_file_path)
+    # model.save_weights(weights_file_path)
     
     if (loss < lowest_eval_loss):
         log("New record!")
-        with open(loss_log_file_path, "w") as loss_log_file:
-            loss_log_file.write(str(loss.item()))
+        # with open(loss_log_file_path, "w") as loss_log_file:
+        #     loss_log_file.write(str(loss.item()))
             
-        model.save_weights(best_weights_file_path)
+        # model.save_weights(best_weights_file_path)
         
         depth_map, _ = load_input_data(test_subfolders[0], "front")
         uv_map = load_output_data(test_subfolders[0], "front")[0]
