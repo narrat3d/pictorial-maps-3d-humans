@@ -8,7 +8,7 @@ output_folder = os.path.join(os.path.dirname(__file__), "experiments")
 
 num_runs = 5
 
-for body_part_name in ["left_upper_arm"]: # , "left_upper_arm", "left_lower_arm", "left_lower_leg", "left_upper_leg", "torso", "left_foot", "head"
+for body_part_name in ["torso", "head", "left_upper_arm", "left_lower_arm", "left_hand", "left_upper_leg", "left_lower_leg", "left_foot"]:
     for run_nr in range(num_runs):
         for model_name in ["disn_two_stream_pose"]: # "disn_two_stream", , "disn_one_stream", "disn_one_stream_pose"
             subprocess.run(["python", "train_and_eval.py", 
@@ -18,6 +18,6 @@ for body_part_name in ["left_upper_arm"]: # , "left_upper_arm", "left_lower_arm"
                             "--output_folder", output_folder,
                             "--model_name", model_name,
                             "--run_nr", str(run_nr + 1),
-                            "--eval_only", "False"])
+                            "--eval_only", "True"])
             gc.collect()
             time.sleep(10)
