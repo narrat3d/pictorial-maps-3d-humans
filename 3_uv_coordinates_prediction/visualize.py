@@ -70,7 +70,7 @@ def show_body_parts_mask(path):
     
     
 def show_uv_map(path):
-    uv_map = load_uv_map(path)[0]
+    uv_map = load_uv_map(path, 256)[0]
     
     img = calculate_uv_map(uv_map[..., 1:])
     img.show()
@@ -80,5 +80,5 @@ def show_uv_map(path):
 
 if __name__ == '__main__':
     # img = show_depth_map(r"C:\Users\raimund\Downloads\tmp2\rp_caren_posed_017_0_0_female_large\depth_right.npz")
-    img = show_body_parts_mask(r"C:\Users\raimund\Downloads\tmp2\rp_caren_posed_017_0_0_female_large\body_parts_right_mask.png")
-    img.save(r"C:\Users\raimund\Downloads\right.png")
+    img = show_uv_map(r"C:\Users\raimund\Downloads\tmp2\rp_stephen_posed_037_0_0_male_small\uv_front.npz")
+    img.save(r"C:\Users\raimund\Downloads\uv_front.png")
