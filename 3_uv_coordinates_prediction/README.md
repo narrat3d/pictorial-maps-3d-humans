@@ -1,15 +1,17 @@
 # UV coordinates prediction for human figures from pictorial maps
 
 This is a simple fully convolutional network for predicting 
-UV coordinates of figures from depth images and body part masks.
+UV coordinates of figures from depth images and body part masks
+as well as from textures.
 
 ## Usage
 
 ### Training
 
 * Set TRAINING_DATA_FOLDER in config.py to our training data.
-* Run generator.py (it will call train_and_eval.py).
+* Run generator.py (it will call train_depth_and_body_parts.py).
 * Optionally, adapt some parameters in config.py.
+* Run train_textures.py to predict UV coordinates from images of real or pictorial humans. 
 
 ### Inference
 
