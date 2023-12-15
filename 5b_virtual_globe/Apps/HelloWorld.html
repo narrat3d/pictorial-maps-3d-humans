@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Use correct character set. -->
+  <meta charset="utf-8">
+  <!-- Tell IE to use the latest, best version. -->
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <!-- Make the application on mobile take up the full browser screen and disable user scaling. -->
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+  <title>Hello World!</title>
+  <script data-dojo-config="async: 1, tlmSiblingOfDojo: 0" src="../ThirdParty/dojo-release-1.10.4/dojo/dojo.js"></script>
+  <script src="loadnpy.js"></script>
+  <script src="interpolatePositions.js"></script>
+  <script src="HelloCesium.js"></script>
+  <style>
+      @import url(speech-bubble.css);
+      @import url(../Source/Widgets/widgets.css);
+      html, body, #cesiumContainer {
+          width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden;
+      }
+  </style>
+</head>
+<body>
+  <div id="cesiumContainer"></div>
+</body>
+</html>

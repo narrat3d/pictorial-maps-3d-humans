@@ -1,0 +1,33 @@
+/* copy your custom speech bubble CSS from lib/bubbly-gh-pages/index.html
+   only side bottom is supported so far
+*/
+.speech-bubble {
+  position: relative;
+  background: white;
+  border-radius: 0.2em;
+}
+
+.speech-bubble:after {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  width: 0;
+  height: 0;
+  border: 25px solid transparent;
+  border-top-color: white;
+  border-bottom: 0;
+  margin-left: -25px;
+  margin-bottom: -25px;
+}
+
+/* feel free to modify these properties */
+.speech-bubble {
+  width: 420px;
+  padding: 20px 20px;
+  margin: 0 0;
+  text-align: center;
+  color: black;
+  font-weight: bold;
+  font-size: 200%;
+}
