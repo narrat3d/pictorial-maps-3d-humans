@@ -83,14 +83,13 @@ def transfer_training_data(input_folder, output_folder, image_type, view):
         
         uv_map_resized = resize_array(uv_map, (IMAGE_SIZE, IMAGE_SIZE))
         
-        np.save(os.path.join(output_folder, "predicted_%s_uv" % image_type, output_file_name + ".npy"), uv_map_resized)
+        np.save(os.path.join(output_folder, "uv", output_file_name + ".npy"), uv_map_resized)
         
         
 
 # for view in ["front_cropped", "front", "back", "right", "left"]:
-    # transfer_training_data(r"E:\Repositories\pictorial-maps-3d-humans\data\out", r"E:\CNN\masks\data\figures_pictorial\test", "pictorial", view)
-    # transfer_training_data(r"C:\Users\raimund\Downloads\tmp2", r"E:\CNN\masks\data\figures_pictorial\train", "real", view)
-    
+    # transfer_training_data(r"C:\Users\raimund\Downloads\tmp2", r"E:\CNN\masks\data\textures_data\train_real", "real", view)
+    # transfer_training_data(r"E:\Repositories\pictorial-maps-3d-humans\data\out", r"E:\CNN\masks\textures_data\test_pictorial2", "pictorial", view)
 
     
 """
@@ -106,9 +105,6 @@ for mask_name in os.listdir(r"E:\CNN\masks\data\figures\real\masks"):
         shutil.copy(os.path.join(r"E:\CNN\masks\data\figures\real\images", mask_name.replace(".png", ".jpg")), 
                     r"E:\Repositories\cartoonize\test_code\test_images")
 """
-
-
-
 
 
 def calculate_uv_map(arr):
@@ -149,19 +145,19 @@ def calculate_uv_map(arr):
 data_type = "train"
 current_view = None
 
-for image_name in os.listdir(r"E:\CNN\masks\data\figures_pictorial\train\images_pictorial_input"):
-    input_image_path = os.path.join(r"E:\CNN\masks\data\figures_pictorial\train\images_pictorial_input", image_name)
-    output_image_path = os.path.join(r"E:\CNN\masks\data\figures_pictorial\train\images_pictorial_output", image_name)
-    mask_path = os.path.join(r"E:\CNN\masks\data\figures_pictorial\train\masks_pictorial", image_name.replace(".jpg", ".png"))
+for image_name in os.listdir(r"E:\CNN\masks\data\textures_data\train_pictorial\images"):
+    input_image_path = os.path.join(r"E:\CNN\masks\data\textures_data\train_real\images", image_name)
+    output_image_path = os.path.join(r"E:\CNN\masks\data\textures_data\train_pictorial\images", image_name)
+    mask_path = os.path.join(r"E:\CNN\masks\data\textures_data\train_pictorial\masks", image_name.replace(".jpg", ".png"))
     keypoints_path = os.path.join(r"E:\CNN\masks\data\figures\real\keypoints", image_name.replace(".jpg", ".json"))
-    uv_path = os.path.join(r"E:\CNN\masks\data\figures_pictorial\train\predicted_pictorial_uv", image_name.replace(".jpg", ".npy"))
+    uv_path = os.path.join(r"E:\CNN\masks\data\textures_data\train_pictorial\uv", image_name.replace(".jpg", ".npy"))
 
 data_type = "test"
-for image_name in ["56937af294b81d9ec26ef94378efcf1d--maps-history-travel-illustration_front.jpg"]: # os.listdir(r"E:\CNN\masks\data\figures_pictorial\test\images_pictorial_input"):
-    input_image_path = os.path.join(r"E:\CNN\masks\data\figures_pictorial\test\images_pictorial_input", image_name)
-    output_image_path = os.path.join(r"E:\CNN\masks\data\figures_pictorial\test\images_pictorial_output", image_name)
-    mask_path = os.path.join(r"E:\CNN\masks\data\figures_pictorial\test\masks_pictorial", image_name.replace(".jpg", ".png"))
-    uv_path = os.path.join(r"E:\CNN\masks\data\figures_pictorial\test\predicted_pictorial_uv", image_name.replace(".jpg", ".npy"))
+for image_name in ["56937af294b81d9ec26ef94378efcf1d--maps-history-travel-illustration_front.jpg"]:
+    input_image_path = os.path.join(r"E:\CNN\masks\data\textures_data\pictorial_test\images", image_name)
+    output_image_path = os.path.join(r"E:\CNN\masks\data\textures_data\pictorial_test\images", image_name)
+    mask_path = os.path.join(r"E:\CNN\masks\data\textures_data\pictorial_test\masks", image_name.replace(".jpg", ".png"))
+    uv_path = os.path.join(r"E:\CNN\masks\data\textures_data\pictorial_test\uv", image_name.replace(".jpg", ".npy"))
     
     current_view = None
    
@@ -228,7 +224,7 @@ for image_name in ["56937af294b81d9ec26ef94378efcf1d--maps-history-travel-illust
         square_head_image.save(os.path.join(output_folder, image_name))
     
 
-    resynthesized_head_image = Image.open(os.path.join(r"E:\CNN\masks\data\figures_pictorial\%s\images_enhanced2" % data_type, image_name.replace(".jpg", ".png")))
+    resynthesized_head_image = Image.open(os.path.join(r"E:\CNN\masks\data\figures_pictorial\%s\images_enhanced" % data_type, image_name.replace(".jpg", ".png")))
     resynthesized_head_image = resynthesized_head_image.rotate(-angle, Image.NEAREST, fillcolor=(255, 255, 255))
     resynthesized_head_image = resynthesized_head_image.resize((square_size, square_size), Image.NEAREST)
     
@@ -248,7 +244,7 @@ for image_name in ["56937af294b81d9ec26ef94378efcf1d--maps-history-travel-illust
     masked_image_np = binary_mask_rgb * head_image_np + (1 - binary_mask_rgb) * 255
     masked_image_np_rgba = np.concatenate([masked_image_np, binary_mask_rgb[..., 0:1] * 255], -1)
     
-    Image.fromarray(masked_image_np_rgba.astype(np.uint8)).save(os.path.join(r"E:\CNN\masks\data\figures_pictorial\%s\images_enhanced2" % data_type, image_name.replace(".jpg", "_2.png")))
+    Image.fromarray(masked_image_np_rgba.astype(np.uint8)).save(os.path.join(r"E:\CNN\masks\data\figures_pictorial\%s\images_enhanced" % data_type, image_name.replace(".jpg", ".png")))
 
     uv_map = np.load(uv_path)
     # only needed for testing data
