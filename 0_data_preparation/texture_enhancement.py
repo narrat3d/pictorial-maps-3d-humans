@@ -31,6 +31,9 @@ BODY_PART_MAPPING = [
 mapping = list(map(lambda part_name: BODY_PARTS[part_name], BODY_PART_MAPPING)) + (255 - len(BODY_PART_MAPPING)) * [np.nan] + [255]
 mapping = np.array(mapping)
 
+'''
+copy textured figures from SMPL-X to training folders and inferred figures to test folders
+'''
 def transfer_training_data(input_folder, output_folder, image_type, view):
     for figure_folder in os.listdir(input_folder):        
         output_file_name = figure_folder + "_" + view
@@ -93,6 +96,8 @@ def transfer_training_data(input_folder, output_folder, image_type, view):
 
     
 """
+# filter by number of body parts
+
 for mask_name in os.listdir(r"E:\CNN\masks\data\figures\real\masks"):
     mask = Image.open(os.path.join(r"E:\CNN\masks\data\figures\real\masks", mask_name))
     mask = mask.getchannel(0)
@@ -106,7 +111,9 @@ for mask_name in os.listdir(r"E:\CNN\masks\data\figures\real\masks"):
                     r"E:\Repositories\cartoonize\test_code\test_images")
 """
 
-
+'''
+display a UV image file
+'''
 def calculate_uv_map(arr):
     def uv2rgb(uv):
         [u, v] = uv
@@ -142,25 +149,23 @@ def calculate_uv_map(arr):
 # uv_map = np.swapaxes(np.flip(uv_map, 1), 0, 1)
 # calculate_uv_map(uv_map).save(r"E:\CNN\masks\data\figures_pictorial\1.png")
 
-data_type = "train"
-current_view = None
 
-for image_name in os.listdir(r"E:\CNN\masks\data\textures_data\train_pictorial\images"):
-    input_image_path = os.path.join(r"E:\CNN\masks\data\textures_data\train_real\images", image_name)
+'''
+extract head images, masks and UV coordinates from whole body
+'''
+
+data_type = "train" # "test"
+
+for image_name in os.listdir(r"E:\CNN\masks\data\textures_data\test_real\images"):
+    input_image_path = os.path.join(r"E:\CNN\masks\data\textures_data\test_real\images", image_name)
     output_image_path = os.path.join(r"E:\CNN\masks\data\textures_data\train_pictorial\images", image_name)
-    mask_path = os.path.join(r"E:\CNN\masks\data\textures_data\train_pictorial\masks", image_name.replace(".jpg", ".png"))
-    keypoints_path = os.path.join(r"E:\CNN\masks\data\figures\real\keypoints", image_name.replace(".jpg", ".json"))
+    mask_path = os.path.join(r"E:\CNN\masks\data\textures_data\test_real\masks", image_name.replace(".jpg", ".png"))
+    keypoints_path = os.path.join(r"E:\CNN\masks\data\textures_data\test_real\keypoints", image_name.replace(".jpg", ".json"))
     uv_path = os.path.join(r"E:\CNN\masks\data\textures_data\train_pictorial\uv", image_name.replace(".jpg", ".npy"))
-
-data_type = "test"
-for image_name in ["56937af294b81d9ec26ef94378efcf1d--maps-history-travel-illustration_front.jpg"]:
-    input_image_path = os.path.join(r"E:\CNN\masks\data\textures_data\pictorial_test\images", image_name)
-    output_image_path = os.path.join(r"E:\CNN\masks\data\textures_data\pictorial_test\images", image_name)
-    mask_path = os.path.join(r"E:\CNN\masks\data\textures_data\pictorial_test\masks", image_name.replace(".jpg", ".png"))
-    uv_path = os.path.join(r"E:\CNN\masks\data\textures_data\pictorial_test\uv", image_name.replace(".jpg", ".npy"))
     
     current_view = None
-   
+    
+    # for folder 'test_pictorial2'
     for view in ["front_cropped", "front", "left", "right", "back"]:
         ending = "_%s.jpg" % view
         
@@ -168,18 +173,17 @@ for image_name in ["56937af294b81d9ec26ef94378efcf1d--maps-history-travel-illust
             image_name_without_view = image_name.replace(ending, "")
             current_view = view
             break
-            
-    keypoints_path = os.path.join(r"E:\Repositories\pictorial-maps-3d-humans\data\out", image_name_without_view, "skeleton_front.json")
-    
+
     with open(keypoints_path) as keypoints_file:
         keypoints = json.load(keypoints_file)
-    
+
     neck_point = keypoints.get("8")
     head_point = keypoints.get("9")
     
     if (neck_point == None or head_point == None):
         continue
-    
+
+    # rotate 3D keypoints in folder 'test_pictorial2' 
     if (current_view in [None, "front_cropped", "front"]):
         angle = -math.atan2(neck_point[0] - head_point[0], neck_point[1] - head_point[1]) / math.pi * 180
     elif (current_view == "back"):
@@ -208,7 +212,7 @@ for image_name in ["56937af294b81d9ec26ef94378efcf1d--maps-history-travel-illust
     square_head_mask.paste(cropped_head, (head_offset_x, head_offset_y))
     square_head_mask_normalized = square_head_mask.rotate(angle, fillcolor=0)
     square_head_mask_normalized = square_head_mask_normalized.resize((image_size, image_size), Image.NEAREST)
-    square_head_mask_normalized.save(os.path.join(r"E:\CNN\masks\data\figures_pictorial\%s\masks_heads" % data_type, image_name.replace(".jpg", ".png")))
+    square_head_mask_normalized.save(os.path.join(r"E:\CNN\masks\data\figures_pictorial\%s\heads_masks" % data_type, image_name.replace(".jpg", ".png")))
     
     for [image_path, output_folder] in [[input_image_path, r"E:\CNN\masks\data\figures_pictorial\%s\heads_input" % data_type], 
                                       [output_image_path, r"E:\CNN\masks\data\figures_pictorial\%s\heads_output" % data_type]]:
@@ -223,8 +227,9 @@ for image_name in ["56937af294b81d9ec26ef94378efcf1d--maps-history-travel-illust
         square_head_image = square_head_image.resize((image_size, image_size), Image.NEAREST)
         square_head_image.save(os.path.join(output_folder, image_name))
     
-
-    resynthesized_head_image = Image.open(os.path.join(r"E:\CNN\masks\data\figures_pictorial\%s\images_enhanced" % data_type, image_name.replace(".jpg", ".png")))
+    """
+    # paste resynthesized texture back to whole figure
+    resynthesized_head_image = Image.open(os.path.join(r"E:\CNN\masks\data\figures_pictorial\%s\results" % data_type, image_name.replace(".jpg", ".png")))
     resynthesized_head_image = resynthesized_head_image.rotate(-angle, Image.NEAREST, fillcolor=(255, 255, 255))
     resynthesized_head_image = resynthesized_head_image.resize((square_size, square_size), Image.NEAREST)
     
@@ -234,7 +239,7 @@ for image_name in ["56937af294b81d9ec26ef94378efcf1d--maps-history-travel-illust
                                                                
     head_image.paste(resynthesized_head_image, (head_bbox[0] - head_offset_x, head_bbox[1] - head_offset_y), square_head_mask_normalized)
     head_image.show()
-    
+
     head_image_np = np.array(head_image)
     mask_np = np.array(mask)
     
@@ -244,8 +249,9 @@ for image_name in ["56937af294b81d9ec26ef94378efcf1d--maps-history-travel-illust
     masked_image_np = binary_mask_rgb * head_image_np + (1 - binary_mask_rgb) * 255
     masked_image_np_rgba = np.concatenate([masked_image_np, binary_mask_rgb[..., 0:1] * 255], -1)
     
-    Image.fromarray(masked_image_np_rgba.astype(np.uint8)).save(os.path.join(r"E:\CNN\masks\data\figures_pictorial\%s\images_enhanced" % data_type, image_name.replace(".jpg", ".png")))
-
+    Image.fromarray(masked_image_np_rgba.astype(np.uint8)).save(os.path.join(r"E:\CNN\masks\data\figures_pictorial\%s\results" % data_type, image_name.replace(".jpg", ".png")))
+    """
+    
     uv_map = np.load(uv_path)
     # only needed for testing data
     uv_map = np.flip(np.swapaxes(uv_map, 0, 1), 0)
