@@ -32,5 +32,3 @@ To enable the terrain model, collect a bearer token in Cesium Ion and insert it 
 
 Note that the initial compilation of the shaders takes a long time. 
 After caching the shaders, reloading the page is much faster.
-
-© 2023 ETH Zurich, Raimund Schnürer
