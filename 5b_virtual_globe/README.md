@@ -1,6 +1,6 @@
 # Animated ray-marched figures with speech bubbles in a virtual globe
 
-This is an adapted version of the [Cesium library](https://cesiumjs.org/) from 2017.
+This is an adapted version of the [Cesium library](https://cesiumjs.org/) from 2017 (MIT License, Copyright by Cesium Contributors).
 The original README is [here](README_CESIUM.md).
 
 Speech bubbles are created by the [HTMLBillboards](https://github.com/ThadThompson/CesiumHtmlBillboards) and 
