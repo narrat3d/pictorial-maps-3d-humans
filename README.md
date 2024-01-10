@@ -1,6 +1,6 @@
 # Inferring 3D human figures from pictorial maps 
 
-This is the official code repository for the article "Inferring Implicit 3D Representations from Human Figures on Pictorial Maps"
+This is code for the article [Inferring Implicit 3D Representations from Human Figures on Pictorial Maps](http://narrat3d.ethz.ch/3d-humans-from-pictorial-maps/). Please find further READMEs in the subfolders for more information.
 
 ## Git configuration
 
