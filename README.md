@@ -2,6 +2,9 @@
 
 This is code for the article [Inferring Implicit 3D Representations from Human Figures on Pictorial Maps](http://narrat3d.ethz.ch/3d-humans-from-pictorial-maps/). Please find further READMEs in the subfolders for more information.
 
+![Figure_on_map](https://github.com/narrat3d/pictorial-maps-3d-humans/assets/9949879/d1384809-1013-44d2-b36f-9c0e751fa3df)
+
+
 ## Git configuration
 
 * Use 'git submodule update --init --recursive --force --remote' to check out the submodules.
@@ -42,5 +45,8 @@ This is code for the article [Inferring Implicit 3D Representations from Human F
 ## Notes
 
 * Optionally enable [long folder paths](https://docs.microsoft.com/en-us/windows/win32/fileio/maximum-file-path-limitation?tabs=registry#enable-long-paths-in-windows-10-version-1607-and-later) (> 256 characters) if you get problems with the 3D pose estimation models
+
+![Eating](https://github.com/narrat3d/pictorial-maps-3d-humans/assets/9949879/57d77c51-86bd-4caa-8280-6ad3a8cc3d5f)
+
 
 © 2022-2023 ETH Zurich, Raimund Schnürer
