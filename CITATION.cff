@@ -24,8 +24,8 @@ preferred-citation:
   type: article
   url: https://doi.org/10.1080/15230406.2023.2224063
   date-published: 2023-06-26
-  year: 2023
-  month: 6
+  year: 2024
+  month: 2
   issn: 1523-0406
   issue: '1'
   journal: Cartography and Geographic Information Science
@@ -33,5 +33,4 @@ preferred-citation:
     - en
   start: '97'
   end: '113'
-  type: article
   volume: '51'
