@@ -48,5 +48,21 @@ This is code for the article [Inferring Implicit 3D Representations from Human F
 
 ![Eating](https://github.com/narrat3d/pictorial-maps-3d-humans/assets/9949879/57d77c51-86bd-4caa-8280-6ad3a8cc3d5f)
 
+## Citation
+
+Please cite the following article when using this code:
+
+```
+@article{schnuerer2024inferring,
+  author = {Raimund Schnürer, A. Cengiz Öztireli, Magnus Heitzler, René Sieber and Lorenz Hurni},
+  title = {Inferring implicit 3D representations from human figures on pictorial maps},
+  journal = {Cartography and Geographic Information Science},
+  volume = {51},
+  number = {1},
+  pages = {97-113},
+  year = {2024},
+  doi = {10.1080/15230406.2023.2224063}
+}
+```
 
 © 2022-2023 ETH Zurich, Raimund Schnürer
